@@ -1,0 +1,57 @@
+{
+  "name": "GardenLink.Controlador",
+  "version": "0.0.1",
+  "dependencies": {
+    "async": "^1.4.2",
+    "ejs": ">= 0.0.0",
+    "express": "3.x",
+    "jwt-simple": "^0.5.0",
+    "later": "1.1.6",
+    "mocha": "^2.3.4",
+    "moment": "2.9.0",
+    "mongodb": "2.0.25",
+    "mongoose": "4.0.1",
+    "nedb": "^1.5.0",
+    "node-dweetio": "0.0.11",
+    "node-twitterbot": "0.2.2",
+    "nodemailer": "0.7.1",
+    "passport": ">= 0.0.0",
+    "passport-twitter": "1.0.3",
+    "ping": "^0.1.10",
+    "plotly": "1.0.2",
+    "restler": "3.2.2",
+    "serve-static": "1.9.2",
+    "should": "^8.2.2",
+    "supertest": "^1.2.0",
+    "throw.js": "^1.0.0",
+    "underscore": "^1.8.3",
+    "unit.js": "^2.0.0",
+    "winston": "0.9.0"
+  },
+  "apidoc": {
+    "title": "GardenLink.Api",
+    "url": "https://github.com/GardenLink/GardenLink.Api.git"
+  },
+  "scripts": {
+    "start": "node ApiServer.js release",
+    "test": "mocha test"
+  },
+  "description": "Api para sistema de control de riego",
+  "main": "ApiServer.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [
+    "Riego",
+    "IOT"
+  ],
+  "author": "Diego Navarro M.",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Gerdenlink/GardenLink.Api.git"
+  },
+  "engines": {
+    "node": "4.0"
+  }
+}
