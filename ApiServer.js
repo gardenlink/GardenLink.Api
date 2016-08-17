@@ -1,7 +1,7 @@
 
 /*
  * GARDENLINK.CONTROLADOR 0.1
- * Sistema para monitoreo y control de riego automatizado 
+ * Sistema para monitoreo y control de riego automatizado
  * utilizando Raspberry + Arduino
  * Autor: GardenLink
  * Fecha: 15-01-2015
@@ -12,7 +12,7 @@ var app = express();
 var os=require('os');
 var ifaces=os.networkInterfaces();
 var req = require('restler');
-var winston     = require ('winston'); 
+var winston     = require ('winston');
 var path        = require ('path'); //para utilizar rutas
 var fs = require('fs'); //leer desde el filesystem
 
@@ -23,7 +23,7 @@ var fs = require('fs'); //leer desde el filesystem
 // Configuracion de Winston (logging) para crear archivo de log diario
 // ej. log_file.log.2015-13-02
 // uso: logger.info("Registro de log", {extraData: 'texto logueado'});
-var transports  = []; 
+var transports  = [];
 transports.push(new winston.transports.DailyRotateFile({
   name: 'file',
   //datePattern: '.yyyy-MM-ddTHH',
@@ -37,7 +37,7 @@ var _dirname = __dirname;
 
 
 // Modo de inicio de aplicacion:
-// 1.- Configuracion desde config.json. Requiere iniciar server con comando: 
+// 1.- Configuracion desde config.json. Requiere iniciar server con comando:
 //     NODE_ENV=production node app.js
 // 2.- Configuracion como argumentos al iniciar aplicacion
 //     node SwitchControl.js release
@@ -114,12 +114,12 @@ var serviceProvider = new SS(dataProvider, config, logger, function(err, data){ 
 console.log("GardenLink Host: " + appHost);
 console.log("GardenLink Port: " + appPort);
 
-logger.info("GardenLink Host: " + appHost);  
+logger.info("GardenLink Host: " + appHost);
 logger.info("GardenLink Port:" + appPort);
 
 
 console.log("Configurando Libreria Auxiliares...");
-logger.info("Fin Configuracion Libreria Auxiliares..."); 
+logger.info("Fin Configuracion Libreria Auxiliares...");
 
 var Auxiliares = require("./lib/util/Auxiliares.js");
 var auxiliares = new Auxiliares();
@@ -153,10 +153,16 @@ logger.info("Autenticacion Twitter : " + config.twitter_autenticacion);
 console.log("Configurando Temporizador...");
 logger.info("Configurando Temporizador...")
 var Temporizador = require("./lib/Temporizador.js");
-var tareas = new Temporizador(config, logger, mailer,tweet,dataProvider);
-tareas.Iniciar();
+var tareas = new Temporizador(config, logger, mailer,dataProvider,serviceProvider,function(error, data) {
+  if (error)
+    console.log("ApiServer.Temporizador: Error al inicializar constructor.. detalle : " + error);
+  else {
+      console.log("Temporizador: Inicializacion Terminada");
+  }
+});
+
 console.log("Fin Configuracion Temporizador...");
-logger.info("Fin Configuracion Temporizador..."); 
+logger.info("Fin Configuracion Temporizador...");
 
 
 
@@ -179,7 +185,7 @@ logger.info("Configurando CORS..");
 
 
 app.configure(function() {
- 
+
   //app.use(express.logger());
   app.use(express.cookieParser());
   app.use(express.bodyParser());
@@ -196,7 +202,7 @@ app.configure(function() {
 	  next();
   });
   app.use(app.router);
-  
+
 });
 
 
@@ -258,15 +264,21 @@ logger.info("./routes/Servicio");
 require('./routes/Servicio.js')(app, moment, dataProvider,serviceProvider,logger,middleware);
 
 
+console.log("Configuracion de Sincronizador de bases de datos..");
+var DBSync = require("./lib/util/DBSync.js");
 
+/*
+var dbSync = new DBSync(dataProvider, config, logger, function(error, info) {
+  console.log("Sincronizador configurado : " + info);
+});
+*/
 console.log("Fin Configuracion ...");
-logger.info("Fin Configuracion ..."); 
+logger.info("Fin Configuracion ...");
 
 /************************** END CONFIG ********************************/
 
 
 
-app.listen(appPort); 
+app.listen(appPort);
 console.log('Servidor corriendo en: http://'+IPAddress+':'+appPort+'/');
 logger.info('Servidor corriendo en: http://'+IPAddress+':'+appPort+'/');
-

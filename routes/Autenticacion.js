@@ -1,5 +1,5 @@
 var moment = require('moment'); 
-var Service = require('../lib/util/Seguridad/JwtService.js');
+var Service = require('../lib/util/seguridad/JwtService.js');
 
 
 

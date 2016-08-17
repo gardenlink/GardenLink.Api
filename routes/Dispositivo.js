@@ -6,7 +6,7 @@ var arduinoService;
 
 var req = require('restler');
 var async = require('async');
-var _ = require('underscore'); 
+var _ = require('underscore');
 
 
 
@@ -24,7 +24,7 @@ app.get('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated, function (re
 
      var filter = {Id : String};
     filter.Id = dispositivo;
-    dataProvider.Device().Find(filter, function(err, data) { 
+    dataProvider.Device().Find(filter, function(err, data) {
       if (data) {
         response.send(data);
       }
@@ -40,7 +40,7 @@ app.get('/api/v1/dispositivos/:id/sensores', middleware.EnsureAuthenticated,func
 
      var filter = {IdDispositivo : String};
     filter.IdDispositivo = dispositivo;
-    dataProvider.Sensor().GetCollection(filter, function(err, data) { 
+    dataProvider.Sensor().GetCollection(filter, function(err, data) {
       if (data) {
         response.send(data);
       }
@@ -56,7 +56,7 @@ app.get('/api/v1/dispositivos/:id/relays', middleware.EnsureAuthenticated,functi
 
      var filter = {IdDispositivo : String};
     filter.IdDispositivo = dispositivo;
-    dataProvider.Relay().GetCollection(filter, function(err, data) { 
+    dataProvider.Relay().GetCollection(filter, function(err, data) {
       if (data) {
         response.send(data);
       }
@@ -72,7 +72,7 @@ app.get('/api/v1/dispositivos/:id/motores', middleware.EnsureAuthenticated,funct
 
      var filter = {IdDispositivo : String};
     filter.IdDispositivo = dispositivo;
-    dataProvider.Motores().GetCollection(filter, function(err, data) { 
+    dataProvider.Motor().GetCollection(filter, function(err, data) { 
       if (data) {
         response.send(data);
       }
@@ -89,7 +89,7 @@ app.get('/api/v1/dispositivos/:id/motores', middleware.EnsureAuthenticated,funct
  * @apiSuccess {array} El arreglo de objetos solicitado
  */
 app.get('/api/v1/dispositivos', middleware.EnsureAuthenticated,function(request, response){
-	 dataProvider.Device().GetAll(function(err, data) { 
+	 dataProvider.Device().GetAll(function(err, data) {
       if (data && data.length > 0) {
         response.json(data);
       }
@@ -117,10 +117,10 @@ app.post('/api/v1/dispositivos',middleware.EnsureAuthenticated,function(request,
     var frecuencia = request.body.FrecuenciaMuestreo;
 
     dataProvider.Device().Save(id, nombre, tipo, ip,puerto,habilitado,estado,frecuencia);
-    
+
     response.json("ok");
 
-	
+
 });
 
 /**
@@ -140,9 +140,9 @@ app.put('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated,function(requ
     var frecuencia = request.body.FrecuenciaMuestreo;
 
     dataProvider.Device().Save(id, nombre, tipo, ip,puerto,habilitado,estado,frecuencia);
-    
+
     response.json("ok");
-	
+
 });
 
 /**
@@ -162,15 +162,15 @@ app.put('/api/v1/dispositivos/:id/subscripcion', middleware.EnsureAuthenticated,
 	var id = request.params.id;
     var ip = request.body.ip;
     var estado = true;
-    
+
 	var filter = {Id : String};
     filter.Id = id;
-    
-    dataProvider.Device().Find(filter, function(err, data) { 
+
+    dataProvider.Device().Find(filter, function(err, data) {
       if (err){
       	console.log("/api/v1/dispositivos/:id/subscripcion --> Error: " + err);
       }
-      
+
       if (data) {
       	console.log("Llega peticion -> valor: " + data.FrecuenciaMuestreo);
         dataProvider.Device().Save(data.Id, data.Nombre, data.Tipo, ip,data.Puerto,data.Habilitado,estado, data.FrecuenciaMuestreo);
@@ -190,7 +190,7 @@ app.get('/api/v1/dispositivos/:id/ping', middleware.EnsureAuthenticated, functio
 
      var filter = {Id : String};
     filter.Id = dispositivo;
-    dataProvider.Device().Find(filter, function(err, data) { 
+    dataProvider.Device().Find(filter, function(err, data) {
       if (data) {
         var net = new NetworkingLibrary();
 			net.Ping(data.Ip, function(error, datos) {
@@ -208,9 +208,9 @@ app.get('/api/v1/dispositivos/:id/ping', middleware.EnsureAuthenticated, functio
       	response.send("");
       }
     });
-	
 
-	
+
+
 });
 
 
@@ -227,7 +227,7 @@ app.get('/api/v1/servicio/dispositivos/:id', middleware.EnsureAuthenticated, fun
 		dataProvider.Cache(true, function(error, data ) {
 				var result = _.find(data.Dispositivos, function(element) {
 					return element.Id == id;
-				}); 
+				});
 				response.json(result);
 			});
 });
