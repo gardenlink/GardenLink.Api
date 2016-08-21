@@ -72,7 +72,7 @@ app.get('/api/v1/dispositivos/:id/motores', middleware.EnsureAuthenticated,funct
 
      var filter = {IdDispositivo : String};
     filter.IdDispositivo = dispositivo;
-    dataProvider.Motor().GetCollection(filter, function(err, data) { 
+    dataProvider.Motor().GetCollection(filter, function(err, data) {
       if (data) {
         response.send(data);
       }

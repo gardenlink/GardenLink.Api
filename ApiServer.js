@@ -267,11 +267,12 @@ require('./routes/Servicio.js')(app, moment, dataProvider,serviceProvider,logger
 console.log("Configuracion de Sincronizador de bases de datos..");
 var DBSync = require("./lib/util/DBSync.js");
 
-/*
+
 var dbSync = new DBSync(dataProvider, config, logger, function(error, info) {
   console.log("Sincronizador configurado : " + info);
 });
-*/
+
+
 console.log("Fin Configuracion ...");
 logger.info("Fin Configuracion ...");
 
