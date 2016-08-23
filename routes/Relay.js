@@ -270,14 +270,16 @@ app.get('/api/v1/relays/:id/mediciones', middleware.EnsureAuthenticated, functio
 
 });
 
-app.post('/api/v1/relays/mediciones',middleware.EnsureAuthenticated, function(request, response) {
+app.post('/api/v1/relays/mediciones/sync',middleware.EnsureAuthenticated, function(request, response) {
 
-
-    dataProvider.Medicion().Save(objMedicion.GetTipoActuadorByName(TipoDispositivo),
-    						   request.body.IdActuador,
+		dataProvider.Medicion().SaveSync(request.body.Id,
+									 request.body.IdTipoActuador,
+									 request.body.IdActuador,
     						   request.body.IdDispositivo,
+									 request.body.TimeStamp,
     						   request.body.Valor
     						   );
+
     response.json("ok");
 
 });

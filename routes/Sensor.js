@@ -174,6 +174,21 @@ app.post('/api/v1/sensores/mediciones',middleware.EnsureAuthenticated, function(
 });
 
 
+app.post('/api/v1/sensores/mediciones/sync',middleware.EnsureAuthenticated, function(request, response) {
+
+	dataProvider.Medicion().SaveSync(request.body.Id,
+								 request.body.IdTipoActuador,
+								 request.body.IdActuador,
+								 request.body.IdDispositivo,
+								 request.body.TimeStamp,
+								 request.body.Valor
+								 );
+
+	response.json("ok");
+
+});
+
+
 
 
 app.get('/api/v1/servicio/sensores/:id', middleware.EnsureAuthenticated, function(request, response, next){
