@@ -16,7 +16,7 @@ var sensorService = serviceProvider.Sensor();
 
 
 app.get('/api/v1/sensores', middleware.EnsureAuthenticated, function(request, response){
-	 dataProvider.Sensor().GetAll(function(err, data) { 
+	 dataProvider.Sensor().GetAll(function(err, data) {
       if (data.length > 0) {
         response.json(data);
       }
@@ -33,12 +33,12 @@ app.get('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function (reques
 
      var filter = {IdSensor : String};
     filter.IdSensor = idSensor;
-    dataProvider.Sensor().Find(filter, function(err, data) { 
+    dataProvider.Sensor().Find(filter, function(err, data) {
       if (err) {
       	response.send(err);
       }
       else if (data) {
-      
+
         response.send(data);
       }
       else
@@ -52,7 +52,7 @@ app.get('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function (reques
 
 app.post('/api/v1/sensores',middleware.EnsureAuthenticated, function(request, response) {
 
-    dataProvider.Sensor().Save(request.body.IdSensor, 
+    dataProvider.Sensor().Save(request.body.IdSensor,
     						   request.body.IdDispositivo,
     						   request.body.Descripcion,
     						   request.body.MarcaModelo,
@@ -63,12 +63,12 @@ app.post('/api/v1/sensores',middleware.EnsureAuthenticated, function(request, re
     						   );
     response.json("ok");
 
-	
+
 });
 
 app.put('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function(request, response) {
-	
-	 dataProvider.Sensor().Save(request.params.id, 
+
+	 dataProvider.Sensor().Save(request.params.id,
     						   request.body.IdDispositivo,
     						   request.body.Descripcion,
     						   request.body.MarcaModelo,
@@ -77,7 +77,7 @@ app.put('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function(request
     						   request.body.EsPinAnalogo,
     						   request.body.Habilitado
     						   );
-    						   
+
     response.json("ok");
 });
 
@@ -95,35 +95,35 @@ app.get('/api/v1/sensores/:id/mediciones', middleware.EnsureAuthenticated, funct
 
 	var  today = moment();
     yesterday = moment(today).add(-12, 'hours');
-    
+
     var returnLast = false;
     var sortObject= null;
-    
+
     if (request.query.last == true || request.query.last == "true"){
     	console.log("LAST");
      	returnLast = request.query.last;
-     	
+
      	sortObject = {};
 		var stype = request.query.sorttype;
 		var sdir = request.query.sortdirection;
 		sortObject[stype] = sdir;
     }
-    
+
 	 var filter = {
 	 			   IdTipoActuador : Number,
 	 			   IdActuador : Number
 	 			  };
-	 			  
-	 
+
+
 	 filter.IdTipoActuador = objMedicion.GetTipoActuadorByName(TipoDispositivo);
 	 filter.IdActuador = request.params.id;
-	 
-	 
+
+
 	 if (returnLast)
 	 {
 	 	filter.sortObject = sortObject ? sortObject : null;
-	 	
-	 	dataProvider.Medicion().GetLast(filter, function(err, data) { 
+
+	 	dataProvider.Medicion().GetLast(filter, function(err, data) {
 	      if (err){
 	      	response.json(err);
 	      }
@@ -136,7 +136,7 @@ app.get('/api/v1/sensores/:id/mediciones', middleware.EnsureAuthenticated, funct
 	 }
 	 else
 	 {
-	 	dataProvider.Medicion().GetCollection(filter, function(err, data) { 
+	 	dataProvider.Medicion().GetCollection(filter, function(err, data) {
 	      if (err){
 	      	response.json(err);
 	      }
@@ -146,10 +146,10 @@ app.get('/api/v1/sensores/:id/mediciones', middleware.EnsureAuthenticated, funct
 		  }
      	});
 	 }
-	 
-	 
-	 
-     
+
+
+
+
 });
 
 
@@ -164,8 +164,8 @@ app.get('/api/v1/sensores/:id/mediciones/:id', middleware.EnsureAuthenticated, f
 
 app.post('/api/v1/sensores/mediciones',middleware.EnsureAuthenticated, function(request, response) {
 
-    dataProvider.Medicion().Save(objMedicion.GetTipoActuadorByName(TipoDispositivo), 
-    						   request.body.IdSensor,
+    dataProvider.Medicion().Save(objMedicion.GetTipoActuadorByName(TipoDispositivo),
+    						   request.body.IdActuador,
     						   request.body.IdDispositivo,
     						   request.body.Valor
     						   );
@@ -178,14 +178,14 @@ app.post('/api/v1/sensores/mediciones',middleware.EnsureAuthenticated, function(
 
 app.get('/api/v1/servicio/sensores/:id', middleware.EnsureAuthenticated, function(request, response, next){
 		var id = request.params.id;
-			
+
 		dataProvider.Cache(true, function(error, data ) {
 			var result = _.find(data.Sensores, function (item) {
 				return item.IdSensor == id;
 			});
 			if (result) {
-				
-				
+
+
 				serviceProvider.Sensor().Leer(result.IdDispositivo, result.IdSensor, result.Tipo, function (error, doc) {
 	      				if (error) {
 	      					console.log("[GET] /api/v1/servicio/sensores/:id -> Error all lamar a servicio Arduino para Sensores -> error :  ", error);
@@ -194,15 +194,15 @@ app.get('/api/v1/servicio/sensores/:id', middleware.EnsureAuthenticated, functio
 	      				else {
 							return response.json(doc);
 	            		}
-	      			}); 
-				
+	      			});
+
 				/*
 				//Obtengo detalle de sensor
 				var url = "http://localhost:9000/api/v1/sensores/" + result.IdSensor + "/mediciones?last=true&sorttype=TimeStamp&sortdirection=desc"
 				req.get(url).on('complete', function(data) {
 			    	result.UltimaMedicion = data;
-					response.json(result);    	
-			    }).on('error', function(error, response) { 
+					response.json(result);
+			    }).on('error', function(error, response) {
 			    	console.log("Servicio -> Error: " + error);
 			    	response.json(error);
 			    });
@@ -212,7 +212,7 @@ app.get('/api/v1/servicio/sensores/:id', middleware.EnsureAuthenticated, functio
 			{
 				response.json("");
 			}
-			
+
 		});
 });
 

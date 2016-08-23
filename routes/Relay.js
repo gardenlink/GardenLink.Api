@@ -21,7 +21,7 @@ var TipoDispositivo = "RELAY";
 
 
 app.get('/api/v1/relays', middleware.EnsureAuthenticated, function(request, response){
-	 dataProvider.Relay().GetAll(function(err, data) { 
+	 dataProvider.Relay().GetAll(function(err, data) {
       if (data.length > 0) {
         response.json(data);
       }
@@ -38,7 +38,7 @@ app.get('/api/v1/relays/:id', middleware.EnsureAuthenticated, function (request,
 
      var filter = {IdRelay : String};
     filter.IdRelay = idRelay;
-    dataProvider.Relay().Find(filter, function(err, data) { 
+    dataProvider.Relay().Find(filter, function(err, data) {
       if (data) {
         response.send(data);
       }
@@ -52,7 +52,7 @@ app.get('/api/v1/relays/:id', middleware.EnsureAuthenticated, function (request,
 
 app.post('/api/v1/relays',middleware.EnsureAuthenticated ,function(request, response) {
 
-    dataProvider.Relay().Save(request.body.IdRelay, 
+    dataProvider.Relay().Save(request.body.IdRelay,
     						   request.body.IdDispositivo,
     						   request.body.Descripcion,
     						   request.body.MarcaModelo,
@@ -65,12 +65,12 @@ app.post('/api/v1/relays',middleware.EnsureAuthenticated ,function(request, resp
     						   );
     response.json("ok");
 
-	
+
 });
 
 app.put('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(request, response) {
-	
-	 dataProvider.Relay().Save(request.params.id, 
+
+	 dataProvider.Relay().Save(request.params.id,
     						   request.body.IdDispositivo,
     						   request.body.Descripcion,
     						   request.body.MarcaModelo,
@@ -81,7 +81,7 @@ app.put('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(request, 
     						   request.body.Activo,
     						   request.body.EsInverso
     						   );
-    						   
+
     response.json("ok");
 });
 
@@ -97,33 +97,33 @@ app.delete('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(reques
 */
 app.patch('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, function(request, response,next) {
 	var idRelay = request.params.id;
-    var op = request.body.op; //solamente replace por ahora 
+    var op = request.body.op; //solamente replace por ahora
     var path = request.body.path; //debe venir sin comillas
     var valor = request.body.value;
-    
-	
-    
+
+
+
     dataProvider.Cache(false, function(error, data ) {
-    
-    		if (error) { 
+
+    		if (error) {
     			return;
     		}
-    			
+
 			var result = _.find(data.Relays, function (item) {
 				return item.IdRelay == idRelay;
 			});
-		
+
 			if (result) {
-				
+
 				data[path] = valor;
       		//Si el cambio es para activar o desactivar el RElay, llamo al servicio de Arduino
 	      	if (path == "Activo") {
 	      		var activo = helper.toBoolean(valor);
-	      		
-	      		
+
+
 	      		if (_DEBUG)
 	      			console.log("ServicioController: valor de variable Activo : " + activo);
-	      		
+
 	      		if (activo == true) {
 	      			serviceProvider.Relay().Activar(result.IdDispositivo, result.IdRelay, function (error, doc) {
 	      				if (error) {
@@ -133,22 +133,22 @@ app.patch('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, functio
 	      				else {
 							return response.json(doc);
 	            		}
-	      			}); 
+	      			});
 	      		}
 	      		else if (activo == false)
 	      		{
-	      			
+
 	      			serviceProvider.Relay().Desactivar(result.IdDispositivo, result.IdRelay, function (error, doc) {
 	      				if (error) {
 	      					console.log("[PATCH] /api/v1/relays/Error all lamar a servicio Arduino para Relays -> error :  ", error);
 	      					return;
 	      				}
 	      				else {
-	      						
+
 								 return response.json(doc);
 	            		}
-	      			}); 
-	      			
+	      			});
+
 	      		}
 	      		else {
 	      			console.log("El valor del atributo Activo no es valido");
@@ -180,14 +180,14 @@ app.get('/api/v1/servicio/relays', middleware.EnsureAuthenticated, function(requ
 
 app.get('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, function(request, response, next){
 		var id = request.params.id;
-		
-		
+
+
 		dataProvider.Cache(true, function(error, data ) {
 				var result = _.find(data.Relays, function(element) {
 					 if (element.IdRelay == id)
 					 	return element.IdRelay;
-				}); 
-				
+				});
+
 				serviceProvider.Relay().Estado(result.IdDispositivo, result.IdRelay, function (error, doc) {
 	      				if (error) {
 	      					console.log("[GET] /api/v1/relays/Error all lamar a servicio Arduino para consultar por el estado de Relays -> error :  ", error);
@@ -196,11 +196,11 @@ app.get('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, function(
 	      				else {
 							return response.json(doc);
 	            		}
-	      			}); 
-				
+	      			});
+
 			});
-			
-		
+
+
 });
 
 
@@ -213,35 +213,35 @@ app.get('/api/v1/relays/:id/mediciones', middleware.EnsureAuthenticated, functio
 
 	var  today = moment();
     yesterday = moment(today).add(-12, 'hours');
-    
+
     var returnLast = false;
     var sortObject= null;
-    
+
     if (request.query.last == true || request.query.last == "true"){
     	console.log("LAST");
      	returnLast = request.query.last;
-     	
+
      	sortObject = {};
 		var stype = request.query.sorttype;
 		var sdir = request.query.sortdirection;
 		sortObject[stype] = sdir;
     }
-    
+
 	 var filter = {
 	 			   IdTipoActuador : Number,
 	 			   IdActuador : Number
 	 			  };
-	 			  
-	 
+
+
 	 filter.IdTipoActuador = objMedicion.GetTipoActuadorByName(TipoDispositivo);
 	 filter.IdActuador = request.params.id;
-	 
-	 
+
+
 	 if (returnLast)
 	 {
 	 	filter.sortObject = sortObject ? sortObject : null;
-	 	
-	 	dataProvider.Medicion().GetLast(filter, function(err, data) { 
+
+	 	dataProvider.Medicion().GetLast(filter, function(err, data) {
 	      if (err){
 	      	response.json(err);
 	      }
@@ -254,7 +254,7 @@ app.get('/api/v1/relays/:id/mediciones', middleware.EnsureAuthenticated, functio
 	 }
 	 else
 	 {
-	 	dataProvider.Medicion().GetCollection(filter, function(err, data) { 
+	 	dataProvider.Medicion().GetCollection(filter, function(err, data) {
 	      if (err){
 	      	response.json(err);
 	      }
@@ -264,11 +264,24 @@ app.get('/api/v1/relays/:id/mediciones', middleware.EnsureAuthenticated, functio
 		  }
      	});
 	 }
-	 
-	 
-	 
-     
+
+
+
+
 });
+
+app.post('/api/v1/relays/mediciones',middleware.EnsureAuthenticated, function(request, response) {
+
+
+    dataProvider.Medicion().Save(objMedicion.GetTipoActuadorByName(TipoDispositivo),
+    						   request.body.IdActuador,
+    						   request.body.IdDispositivo,
+    						   request.body.Valor
+    						   );
+    response.json("ok");
+
+});
+
 
 
 
