@@ -25,11 +25,17 @@ var fs = require('fs'); //leer desde el filesystem
 // uso: logger.info("Registro de log", {extraData: 'texto logueado'});
 var transports  = [];
 transports.push(new winston.transports.DailyRotateFile({
-  name: 'file',
+  name: 'common-log',
   //datePattern: '.yyyy-MM-ddTHH',
   filename: path.join(__dirname, "logs", "log_file.log")
 }));
 
+transports.push(new winston.transports.Console({
+  name: 'console-log',
+  colorize : true
+}));
+
+//Logger base
 var logger = new winston.Logger({transports: transports});
 var _dirname = __dirname;
 
@@ -45,25 +51,25 @@ var _dirname = __dirname;
 var environment = process.argv[2] || process.env.NODE_ENV || 'debug'
 
 //Revisar que las carpetas iniciales existan.. si no estan, las crea.
-console.log("Verificando carpetas de sistema..");
+logger.log("Verificando carpetas de sistema..");
 var pathLog = __dirname + "/logs";
 try {
   fs.mkdirSync(pathLog);
 } catch(e) {
   if ( e.code != 'EEXIST' ) throw e;
 }
-console.log("Carpetas de sistema ok..");
+logger.log("Carpetas de sistema ok..");
 
-console.log("Leyendo Configuracion...");
+
 logger.info("Leyendo Configuracion...");
 
 if (environment != 'release' && environment != 'debug')
 {
-  console.log("Ambiente especificado invalido.. se usara configuracion por defecto");
+
   logger.info("Ambiente especificado invalido.. se usara configuracion por defecto");
   environment = 'debug';
 }
-console.log("Ambiente : " + environment);
+
 logger.info("Ambiente : " + environment);
 var Configuracion = require("./lib/util/Configuracion.js");
 var configuracion = new Configuracion(environment);
@@ -79,19 +85,18 @@ for (var dev in ifaces) {
       if (details.address!="127.0.0.1" && found == false) {
           found = true;
           IPAddress=details.address;
-          console.log("Deteccion de IP del host GardenLink: " + IPAddress);
           logger.info("Deteccion de IP del host GardenLink: " + IPAddress);
         }
     }
   });
 }
 
-console.log("Lectura archivo de configuracion config.json...");
+logger.log("Lectura archivo de configuracion config.json...");
 appHost = config.app_host;
 appPort = config.app_port;
 
 //Autenticacion
-console.log("Configurando Autenticacion ...");
+logger.log("Configurando Autenticacion ...");
 var passport = require('passport');
 var util = require('util');
 var TwitterStrategy = require('passport-twitter').Strategy;
@@ -100,7 +105,6 @@ var middleware = new MiddleWare(config);
 
 
 //Base de datos
-console.log("Configurando Base de Datos");
 logger.info("Configurando Base de Datos");
 
 var DataProvider = require('./lib/dao/DataProvider.js');
@@ -111,18 +115,16 @@ var SS = require('./lib/servicios/ServiceProvider.js');
 var serviceProvider = new SS(dataProvider, config, logger, function(err, data){ });
 
 
-console.log("GardenLink Host: " + appHost);
-console.log("GardenLink Port: " + appPort);
-
 logger.info("GardenLink Host: " + appHost);
 logger.info("GardenLink Port:" + appPort);
 
 
-console.log("Configurando Libreria Auxiliares...");
-logger.info("Fin Configuracion Libreria Auxiliares...");
+logger.log("Configurando Libreria Auxiliares...");
 
 var Auxiliares = require("./lib/util/Auxiliares.js");
 var auxiliares = new Auxiliares();
+logger.info("Fin Configuracion Libreria Auxiliares...");
+
 
 /* Libreria Moment para registro de tiempo */
 var moment = require('moment')
@@ -131,56 +133,46 @@ moment.locale('es');
 
 
 /* MAILER  */
-console.log("Configurando Libreria Mailer...");
 logger.info("Configurando Libreria Mailer...");
-console.log("Aviso por Correo : " + config.mail_enabled);
 logger.info("Aviso por Correo : " + config.mail_enabled);
 var Mailer = require("./lib/util/Mailer.js");
 var mailer = new Mailer(config, logger);
 
 /* twitter */
-console.log("Configurando Libreria twitter...");
 logger.info("Configurando Libreria twitter...");
 var Tweet = require("./lib/util/Tweet.js");
 var tweet = new Tweet(config, logger);
-console.log("Publicacion Twitter : " + config.twitter_enabled);
-console.log("Autenticacion Twitter : " + config.twitter_autenticacion);
 logger.info("Publicacion Twitter : " + config.twitter_enabled);
 logger.info("Autenticacion Twitter : " + config.twitter_autenticacion);
 
 
 /* TEMPORIZADOR */
-console.log("Configurando Temporizador...");
 logger.info("Configurando Temporizador...")
 var Temporizador = require("./lib/Temporizador.js");
 var tareas = new Temporizador(config, logger, mailer,dataProvider,serviceProvider,function(error, data) {
   if (error)
-    console.log("ApiServer.Temporizador: Error al inicializar constructor.. detalle : " + error);
+    logger.log("ApiServer.Temporizador: Error al inicializar constructor.. detalle : " + error);
   else {
-      console.log("Temporizador: Inicializacion Terminada");
+      log.log("Temporizador: Inicializacion Terminada");
   }
 });
 
-console.log("Fin Configuracion Temporizador...");
 logger.info("Fin Configuracion Temporizador...");
 
 
 
 /* Monitoreo de Salud (Lectura Sensores) */
-console.log("Configurando Modulo de Monitorizacion de Salud...");
 logger.info("Configurando Modulo de Monitorizacion de Salud...")
 var MonitorSalud = require("./lib/MonitorSalud.js");
 var monitor = new MonitorSalud(config, logger, mailer,moment,tweet, dataProvider, serviceProvider);
 monitor.Iniciar();
-console.log("Fin Configuracion Modulo Monitorizacion de Salud...");
 logger.info("Fin Configuracion Modulo Monitorizacion de Salud...");
 
-console.log("Configurando Express..");
+logger.log("Configurando Express..");
 
 
 
 
-console.log("Configurando CORS..");
 logger.info("Configurando CORS..");
 
 
@@ -207,73 +199,58 @@ app.configure(function() {
 
 
 //Graficos
-console.log("Configurando Libreria para graficos");
 logger.info("Configurando Libreria para graficos");
 var Graficos = require("./lib/util/Graficos.js");
 var graficos = new Graficos(config, logger);
 
 //Rutas para api rest.
-console.log("Preparando Rutas de apliacion..");
 logger.info("Preparando Rutas de aplicacion..");
 
-console.log("./routes/Sensor");
 logger.info("./routes/Sensor");
 require('./routes/Sensor.js')(app, moment, dataProvider, serviceProvider, logger,middleware);
 
-console.log("./routes/Relay");
 logger.info("./routes/Relay");
 require('./routes/Relay.js')(app, moment, dataProvider, serviceProvider, logger,middleware);
 
-console.log("./routes/Temporizador");
 logger.info("./routes/Temporizador");
 require('./routes/Temporizador.js')(app, moment, dataProvider, logger,middleware);
 
-console.log("./routes/Monitor");
 logger.info("./routes/Monitor");
 require('./routes/Monitor.js')(app,moment,dataProvider,logger, graficos,middleware);
 
 
-console.log("./routes/Autenticacion");
 logger.info("./routes/Autenticacion");
 require('./routes/Autenticacion.js')(app, config,passport,util,TwitterStrategy,auxiliares);
 
-console.log("./routes/Log");
 logger.info("./routes/Log");
 require('./routes/Log')(app, auxiliares, logger, tareas,fs, _dirname, middleware);
 
 
-console.log("./routes/Dispositivo");
 logger.info("./routes/Dispositivo");
 require("./routes/Dispositivo")(app, moment, dataProvider, logger,middleware);
 
-console.log("./routes/TipoActuador");
 logger.info("./routes/TipoActuador");
 require("./routes/TipoActuador")(app, dataProvider, logger,middleware);
 
-console.log("./routes/Motor");
 logger.info("./routes/Motor");
 require('./routes/Motor.js')(app, moment, dataProvider,serviceProvider, logger,middleware);
 
-console.log("./routes/Estados");
 logger.info("./routes/Estados");
 require('./routes/Estados.js')(app, logger,middleware);
 
 
-console.log("./routes/Servicio");
 logger.info("./routes/Servicio");
 require('./routes/Servicio.js')(app, moment, dataProvider,serviceProvider,logger,middleware);
 
 
-console.log("Configuracion de Sincronizador de bases de datos..");
+logger.info("Configuracion de Sincronizador de bases de datos..");
 var DBSync = require("./lib/util/DBSync.js");
 
-
 var dbSync = new DBSync(dataProvider, config, logger, function(error, info) {
-  console.log("Sincronizador configurado : " + info);
+  logger.info("Sincronizador configurado : " + info);
 });
 
 
-console.log("Fin Configuracion ...");
 logger.info("Fin Configuracion ...");
 
 /************************** END CONFIG ********************************/
@@ -281,5 +258,4 @@ logger.info("Fin Configuracion ...");
 
 
 app.listen(appPort);
-console.log('Servidor corriendo en: http://'+IPAddress+':'+appPort+'/');
 logger.info('Servidor corriendo en: http://'+IPAddress+':'+appPort+'/');
