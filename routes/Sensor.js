@@ -59,6 +59,10 @@ app.post('/api/v1/sensores',middleware.EnsureAuthenticated, function(request, re
     						   request.body.Tipo,
     						   request.body.Pin,
     						   request.body.EsPinAnalogo,
+									 request.body.Pin2,
+    						   request.body.EsPinAnalogo2,
+									 request.body.Pin3,
+    						   request.body.EsPinAnalogo3,
     						   request.body.Habilitado
     						   );
     response.json("ok");
@@ -75,6 +79,10 @@ app.put('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function(request
     						   request.body.Tipo,
     						   request.body.Pin,
     						   request.body.EsPinAnalogo,
+									 request.body.Pin2,
+    						   request.body.EsPinAnalogo2,
+									 request.body.Pin3,
+    						   request.body.EsPinAnalogo3,
     						   request.body.Habilitado
     						   );
 
@@ -129,7 +137,6 @@ app.get('/api/v1/sensores/:id/mediciones', middleware.EnsureAuthenticated, funct
 	      }
 	      else
 	      {
-	      	console.log(data);
 		    response.json(data);
 		  }
      	});
