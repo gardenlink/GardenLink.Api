@@ -207,7 +207,7 @@ var graficos = new Graficos(config, logger);
 logger.info("Preparando Rutas de aplicacion..");
 
 logger.info("./routes/Sensor");
-require('./routes/Sensor.js')(app, moment, dataProvider, serviceProvider, logger,middleware);
+require('./routes/Sensor.js')(app, moment, dataProvider, serviceProvider, logger,graficos, middleware);
 
 logger.info("./routes/Relay");
 require('./routes/Relay.js')(app, moment, dataProvider, serviceProvider, logger,middleware);
