@@ -3,7 +3,7 @@ var Service = require('../lib/util/seguridad/JwtService.js');
 
 
 
-module.exports = function(app, config,passport,util,TwitterStrategy,auxiliares){
+module.exports = function(app, config,passport,util,auxiliares){
 
 var service = new Service(config);
 

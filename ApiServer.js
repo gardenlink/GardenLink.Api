@@ -99,7 +99,7 @@ appPort = config.app_port;
 logger.log("Configurando Autenticacion ...");
 var passport = require('passport');
 var util = require('util');
-var TwitterStrategy = require('passport-twitter').Strategy;
+//var TwitterStrategy = require('passport-twitter').Strategy;
 var MiddleWare = require('./lib/util/seguridad/AuthMiddleware.js');
 var middleware = new MiddleWare(config);
 
@@ -220,7 +220,7 @@ require('./routes/Monitor.js')(app,moment,dataProvider,logger, graficos,middlewa
 
 
 logger.info("./routes/Autenticacion");
-require('./routes/Autenticacion.js')(app, config,passport,util,TwitterStrategy,auxiliares);
+require('./routes/Autenticacion.js')(app, config,passport,util,auxiliares);
 
 logger.info("./routes/Log");
 require('./routes/Log')(app, auxiliares, logger, tareas,fs, _dirname, middleware);
