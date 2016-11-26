@@ -15,6 +15,14 @@ var objMedicion = new Medicion();
 var TipoDispositivo = "MOTOR";
 
 
+/**
+ * @api {get} /v1/motores Obtiene la lista de motores existente
+ * @apiGroup Motores 
+ * @apiSuccess {json} Listado de motores
+ * @apiVersion 0.0.1
+ * @apiName Obtener Motores
+ * @apiDescription Devuelve el listado de motores configurados
+ */
 app.get('/api/v1/motores', middleware.EnsureAuthenticated, function(request, response){
 	 dataProvider.Motor().GetAll(function(err, data) { 
       if (data.length > 0) {
@@ -28,6 +36,14 @@ app.get('/api/v1/motores', middleware.EnsureAuthenticated, function(request, res
 });
 
 
+/**
+ * @api {get} /v1/motores/:id Obtiene un motor
+ * @apiGroup Motores 
+ * @apiSuccess {json} Objeto motor
+ * @apiVersion 0.0.1
+ * @apiName Obtener Motor
+ * @apiDescription Devuelve un motor basado en su ID
+ */
 app.get('/api/v1/motores/:id', middleware.EnsureAuthenticated, function (request, response) {
     var idMotor = request.params.id;
 
@@ -45,7 +61,14 @@ app.get('/api/v1/motores/:id', middleware.EnsureAuthenticated, function (request
 });
 
 
-
+/**
+ * @api {post} /v1/motores Crear un motor
+ * @apiGroup Motores 
+ * @apiSuccess {json} Objeto motor
+ * @apiVersion 0.0.1
+ * @apiName Crear Motor
+ * @apiDescription Crear un motor
+ */
 app.post('/api/v1/motores',middleware.EnsureAuthenticated, function(request, response) {
 
     dataProvider.Motor().Save(request.body.IdMotor, 
@@ -66,6 +89,14 @@ app.post('/api/v1/motores',middleware.EnsureAuthenticated, function(request, res
 	
 });
 
+/**
+ * @api {put} /v1/motores/:id Modificar un motor
+ * @apiGroup Motores 
+ * @apiSuccess {json} Objeto motor
+ * @apiVersion 0.0.1
+ * @apiName Modificar Motor
+ * @apiDescription Modificar un motor (objeto completo)
+ */
 app.put('/api/v1/motores/:id', middleware.EnsureAuthenticated, function(request, response) {
 	
 	 dataProvider.Motor().Save(request.params.id, 
@@ -84,18 +115,39 @@ app.put('/api/v1/motores/:id', middleware.EnsureAuthenticated, function(request,
     response.json("ok");
 });
 
+/**
+ * @api {delete} /v1/motores/:id Eliminar un motor
+ * @apiGroup Motores 
+ * @apiSuccess {json} Objeto motor
+ * @apiVersion 0.0.1
+ * @apiName Eliminar Motor
+ * @apiDescription Eliminar un motor
+ */
 app.delete('/api/v1/motores/:id', middleware.EnsureAuthenticated, function(request, response){
 	dataProvider.Motor().Delete(request.params.id);
 	response.json("ok");
 });
 
 
-/****
+/*
 * Desde POSTMAN enviar sin comillas
 * path = Accion
 * valor = AVANZAR, RETROCEDER, DETENER, ESTADO, POSICION
 */
-app.patch('/api/v1/servicio/motores/:id', middleware.EnsureAuthenticated, function(request, response,next) {
+
+/**
+ * @api {patch} /v1/motores/:id Accionar Motores
+ * @apiGroup Motores 
+ * @apiSuccess {json} array
+ * @apiVersion 0.0.1
+ * @apiName AccionarMotor
+ * @apiDescription Accionar motores (AVANZAR, DETENER)
+ * @apiParam path=Action {String}
+ * @apiParam value {String="AVANZAR", "RETROCEDER", "DETENER", "ESTADO", "POSICION"}
+ * @apiExample {curl} Example usage:
+ *     curl --request PATCH --data "path=Accion&value=AVANZAR" http://gardenlink.cl:9000/api/v1/motores/1
+ */
+app.patch('/api/v1/motores/:id', middleware.EnsureAuthenticated, function(request, response,next) {
 	var idMotor = request.params.id;
     var op = request.body.op; //solamente replace por ahora 
     var path = request.body.path; //debe venir sin comillas
@@ -215,6 +267,7 @@ app.patch('/api/v1/servicio/motores/:id', middleware.EnsureAuthenticated, functi
 
 });
 
+/*
 app.get('/api/v1/servicio/motores', middleware.EnsureAuthenticated, function(request, response, next){
 
 		dataProvider.Cache(true, function(error, data ) {
@@ -233,11 +286,22 @@ app.get('/api/v1/servicio/motores/:id', middleware.EnsureAuthenticated, function
 			});
 });
 
-
+*/
 
 // Llamada para obtener el ultimo registro
 // http://localhost:9000/api/v1/motores/1/mediciones?last=true&sorttype=_id&sortdirection=desc
 // criteria can be asc, desc, ascending, descending, 1, or -1
+
+/**
+ * @api {get} /v1/motores/:id/mediciones Obtener mediciones
+ * @apiGroup Motores 
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Motor Mediciones
+ * @apiDescription Obtener ultimas mediciones asociadas al motor
+ * @apiExample {curl} Example usage:
+ 	   curl -i http://localhost:9000/api/v1/motores/1/mediciones?last=true&sorttype=_id&sortdirection=desc
+ */
 
 app.get('/api/v1/motores/:id/mediciones', middleware.EnsureAuthenticated, function(request, response){
 

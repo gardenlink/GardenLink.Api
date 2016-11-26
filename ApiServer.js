@@ -182,6 +182,7 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(express.static('docs')); //documentation
   app.use(express.session({ secret: 'keyboard cat' }));
   // Initialize Passport!  Also use passport.session() middleware, to support
   // persistent login sessions (recommended).
@@ -196,6 +197,8 @@ app.configure(function() {
   app.use(app.router);
 
 });
+
+
 
 
 //Graficos

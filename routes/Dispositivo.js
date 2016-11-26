@@ -10,14 +10,14 @@ var _ = require('underscore');
 
 
 
-/* REST API */
-
 /**
- * @api {get} /api/dispositivos/:id Obtener informacion de un dispositivo determinado
- *
+ * @api {get} /v1/dispositivos/:id Obtener informacion de un dispositivo determinado
  * @apiParam {id} id Dispositivo (unico)
- *
- * @apiSuccess {json} El objeto solicitado.
+ * @apiGroup Dispositivos 
+ * @apiSuccess {json} Listado de dispositivos
+ * @apiVersion 0.0.1
+ * @apiName ObtenerDispositivo
+ * @apiDescription Obtiene un objeto dispositivo basado en su ID
  */
 app.get('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated, function (request, response) {
     var dispositivo = request.params.id;
@@ -35,6 +35,14 @@ app.get('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated, function (re
     });
 });
 
+/**
+* @api {get} /v1/dispositivos/:id/sensores Obtener sensores asociados
+* @apiSuccess {json} Listado de sensores asociados a este dispositivo
+* @apiVersion 0.0.1
+* @apiName ObtenerSensorAsociado
+* @apiDescription Obtener detalle de sensores asociados al dispositivo consultado
+* @apiGroup Dispositivos 
+*/
 app.get('/api/v1/dispositivos/:id/sensores', middleware.EnsureAuthenticated,function (request, response) {
     var dispositivo = request.params.id;
 
@@ -51,6 +59,14 @@ app.get('/api/v1/dispositivos/:id/sensores', middleware.EnsureAuthenticated,func
     });
 });
 
+/**
+* @api {get} /v1/dispositivos/:id/relays Obtener relays asociados
+* @apiSuccess {json} Listado de relays asociados a este dispositivo
+* @apiVersion 0.0.1
+* @apiName ObtenerRelayAsociado
+* @apiDescription Obtener detalle de relays asociados al dispositivo consultado
+* @apiGroup Dispositivos 
+*/
 app.get('/api/v1/dispositivos/:id/relays', middleware.EnsureAuthenticated,function (request, response) {
     var dispositivo = request.params.id;
 
@@ -67,6 +83,15 @@ app.get('/api/v1/dispositivos/:id/relays', middleware.EnsureAuthenticated,functi
     });
 });
 
+
+/**
+* @api {get} /v1/dispositivos/:id/motores Obtener motores asociados
+* @apiSuccess {json} Listado de motores asociados a este dispositivo
+* @apiVersion 0.0.1
+* @apiName ObtenerMotorAsociado
+* @apiDescription Obtener detalle de motores asociados al dispositivo consultado
+* @apiGroup Dispositivos 
+*/
 app.get('/api/v1/dispositivos/:id/motores', middleware.EnsureAuthenticated,function (request, response) {
     var dispositivo = request.params.id;
 
@@ -84,9 +109,12 @@ app.get('/api/v1/dispositivos/:id/motores', middleware.EnsureAuthenticated,funct
 });
 
 /**
- * @api {get} /api/dispositivos Obtiene el listado de dispositivos
- *
- * @apiSuccess {array} El arreglo de objetos solicitado
+ * @api {get} /v1/dispositivos Listar dispositivos
+ * @apiVersion 0.0.1
+ * @apiName Obtener Dispositivos
+ * @apiSuccess {Object[]} dispositivos arreglo de objetos solicitado
+ * @apiDescription Obtener el listado de dispositivos
+ * @apiGroup Dispositivos 
  */
 app.get('/api/v1/dispositivos', middleware.EnsureAuthenticated,function(request, response){
 	 dataProvider.Device().GetAll(function(err, data) {
@@ -101,8 +129,12 @@ app.get('/api/v1/dispositivos', middleware.EnsureAuthenticated,function(request,
 });
 
 /**
- * @api {post} /api/dispositivos Crea un dispositivo
+ * @api {post} /v1/dispositivos Crea un dispositivo
  * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Crear Dispositivo
+ * @apiGroup Dispositivos 
+ * @apiDescription Crea un dispositivo
  */
 app.post('/api/v1/dispositivos',middleware.EnsureAuthenticated,function(request, response) {
 
@@ -124,8 +156,12 @@ app.post('/api/v1/dispositivos',middleware.EnsureAuthenticated,function(request,
 });
 
 /**
- * @api {put} /api/dispositivos/:id Modifica un dispositivo
+ * @api {put} /v1/dispositivos/:id Modifica un dispositivo
  * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Modificar Dispositivo
+ * @apiGroup Dispositivos 
+ * @apiDescription modifica un dispositivo
  */
 app.put('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated,function(request, response) {
 
@@ -146,8 +182,12 @@ app.put('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated,function(requ
 });
 
 /**
- * @api {delete} /api/dispositivos/:id Elimina un dispositivo
+ * @api {delete} /v1/dispositivos/:id Elimina un dispositivo
  * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiGroup Dispositivos 
+ * @apiName Eliminar Dispositivo
+ * @apiDescription elimina un dispositivo
  */
 app.delete('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated,function(request, response){
 	dataProvider.Device().Delete(request.params.id);
@@ -155,8 +195,12 @@ app.delete('/api/v1/dispositivos/:id', middleware.EnsureAuthenticated,function(r
 });
 
 /**
- * @api {put} /api/dispositivos/:id/ip Modifica la property ip
- * @apiSuccess {json} ok
+ * @api {put} /v1/dispositivos/:id/ip Modifica la property ip
+ * @apiSuccess {json} frecuenciaMuestreo
+ * @apiVersion 0.0.1
+ * @apiName Subscribir Dispositivo
+ * @apiGroup Dispositivos 
+ * @apiDescription Modificar la ip de un dispositivo
  */
 app.put('/api/v1/dispositivos/:id/subscripcion', middleware.EnsureAuthenticated, function(request, response) {
 	var id = request.params.id;
@@ -184,6 +228,14 @@ app.put('/api/v1/dispositivos/:id/subscripcion', middleware.EnsureAuthenticated,
 });
 
 
+/**
+ * @api {put} /v1/dispositivos/:id/ping Ping al dispositivo
+ * @apiSuccess {json} PingResult
+ * @apiVersion 0.0.1
+ * @apiName Hacer ping al dispositivo
+ * @apiGroup Dispositivos 
+ * @apiDescription Realiza un ping al dispositivo
+ */
 app.get('/api/v1/dispositivos/:id/ping', middleware.EnsureAuthenticated, function(request, response) {
 
 	 var dispositivo = request.params.id;
@@ -212,26 +264,6 @@ app.get('/api/v1/dispositivos/:id/ping', middleware.EnsureAuthenticated, functio
 
 
 });
-
-
-app.get('/api/v1/servicio/dispositivos', middleware.EnsureAuthenticated, function(request, response, next){
-
-		dataProvider.Cache(true, function(error, data ) {
-				var result = data["Dispositivos"];
-				response.json(result);
-			});
-});
-
-app.get('/api/v1/servicio/dispositivos/:id', middleware.EnsureAuthenticated, function(request, response, next){
-		var id = request.params.id;
-		dataProvider.Cache(true, function(error, data ) {
-				var result = _.find(data.Dispositivos, function(element) {
-					return element.Id == id;
-				});
-				response.json(result);
-			});
-});
-
 
 
 

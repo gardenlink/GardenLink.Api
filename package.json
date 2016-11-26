@@ -1,5 +1,5 @@
 {
-  "name": "GardenLink.Controlador",
+  "name": "GardenLink.Api",
   "version": "0.0.1",
   "dependencies": {
     "async": "^1.4.2",
@@ -30,13 +30,22 @@
   },
   "apidoc": {
     "title": "GardenLink.Api",
-    "url": "https://github.com/GardenLink/GardenLink.Api.git"
+    "url": "http://gardenlink.cl:9000/api",
+    "order": [
+      "Autenticacion",
+      "Logs",
+      "Dispositivos",
+      "Sensores",
+      "Relays",
+      "Motores",
+      "TipoActuadores"
+    ]
   },
   "scripts": {
     "start": "node ApiServer.js release",
     "test": "mocha test"
   },
-  "description": "Api para sistema de control de riego",
+  "description": "Api para sistema de control de riego - https://gardenlink.github.io/",
   "main": "ApiServer.js",
   "directories": {
     "doc": "docs"

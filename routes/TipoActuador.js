@@ -3,9 +3,12 @@ module.exports = function(app, dataProvider, logger, middleware) {
 /* INICIO API REST */
 
 /**
- * @api {get} /api/v1/tipoactuadores Obtiene la lista de actuadores
- * @apiName tipoactuadores
- * @apiGroup TipoActuador
+ * @api {get} /v1/tipoactuadores Obtener los tipos de actuadores configurados
+ * @apiGroup TipoActuadores
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Obtener TipoActuador
+ * @apiDescription Listado de tipos de actuadores existentes
  */
 app.get('/api/v1/tipoactuadores', middleware.EnsureAuthenticated, function(request, response){
 	 dataProvider.TipoActuador().GetAll(function(err, data) { 
@@ -21,12 +24,12 @@ app.get('/api/v1/tipoactuadores', middleware.EnsureAuthenticated, function(reque
 });
 
 /**
- * @api {get} /api/v1/tipoactuadores/:id Obtiene el tipo de actuador
- * @apiName tipoactuadores
- * @apiGroup TipoActuador
- *
- * @apiParam {Number} id TipoActuador unique ID.
- *
+ * @api {get} /v1/tipoactuadores/:id Obtener un tipo de actuador
+ * @apiGroup TipoActuadores
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Obtener un TipoActuador
+ * @apiDescription Obtiene un tipo segun su ID
  */
 app.get('/api/v1/tipoactuadores/:id', middleware.EnsureAuthenticated, function (request, response) {
      var idTipoActuador = request.params.id;

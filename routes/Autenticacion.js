@@ -12,8 +12,26 @@ app.get('/', ensureAuthenticated, function(req, res){
   res.render('index', { user: req.user });
 });
 
-app.post('/auth/login', function(req,res) {
+/**
+ * @api {post} /v1/auth/login Login
+ * @apiGroup Autenticacion 
+ * @apiSuccess {json} token JWT
+ * @apiVersion 0.0.1
+ * @apiName Login
+ * @apiDescription Login para obtener un token
+ * @apiParam usuario {String}
+ * @apiParam password {String}
+ * @apiExample {curl} Example usage:
+ *     curl --data "usuario=juanperez&password=jp123" http://gardenlink.cl:9000/api/v1/auth/login
+ */
+app.post('/api/v1/auth/login', function(req,res) {
+  if (req.body.usuario == "juanperez" && req.body.password == "jp123") {
 	return res.status(200).send({token: service.CrearToken("demo")});
+  }
+  else
+  {
+   res.status(401).send({message: "No autorizado"}); 
+  }
 });
 
 

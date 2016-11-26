@@ -14,7 +14,14 @@ var sensorService = serviceProvider.Sensor();
 
 /* INICIO API REST */
 
-
+/**
+ * @api {get} /v1/sensores Obtener todos los sensores
+ * @apiGroup Sensores 
+ * @apiSuccess {object[]} sensores Listado de sensores
+ * @apiVersion 0.0.1
+ * @apiName Obtener Sensores
+ * @apiDescription Devuelve el listado completo de sensores independiente del dispositivo al que esten asociados
+ */
 app.get('/api/v1/sensores', middleware.EnsureAuthenticated, function(request, response){
 	 dataProvider.Sensor().GetAll(function(err, data) {
       if (data.length > 0) {
@@ -28,6 +35,14 @@ app.get('/api/v1/sensores', middleware.EnsureAuthenticated, function(request, re
 });
 
 
+/**
+ * @api {get} /v1/sensores/:id Obtener un sensor
+ * @apiGroup Sensores 
+ * @apiSuccess {object} sensor Objeto sensor
+ * @apiVersion 0.0.1
+ * @apiName Obtener un Sensor
+ * @apiDescription Devuelve un sensor basado en su ID
+ */
 app.get('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function (request, response) {
     var idSensor = request.params.id;
 
@@ -49,7 +64,14 @@ app.get('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function (reques
 });
 
 
-
+/**
+ * @api {post} /v1/sensores Crear un sensor
+ * @apiGroup Sensores 
+ * @apiSuccess {json} Listado de sensores
+ * @apiVersion 0.0.1
+ * @apiName crear Sensor
+ * @apiDescription Crear un sensor
+ */
 app.post('/api/v1/sensores',middleware.EnsureAuthenticated, function(request, response) {
 
     dataProvider.Sensor().Save(request.body.IdSensor,
@@ -70,6 +92,14 @@ app.post('/api/v1/sensores',middleware.EnsureAuthenticated, function(request, re
 
 });
 
+/**
+ * @api {put} /v1/sensores/:id Modificar un sensor
+ * @apiGroup Sensores 
+ * @apiSuccess {json} Listado de sensores
+ * @apiVersion 0.0.1
+ * @apiName modificar Sensor
+ * @apiDescription Modifica un sensor (objeto completo)
+ */
 app.put('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function(request, response) {
 
 	 dataProvider.Sensor().Save(request.params.id,
@@ -89,11 +119,35 @@ app.put('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function(request
     response.json("ok");
 });
 
+/**
+ * @api {delete} /v1/sensores/:id Elimina un sensor
+ * @apiGroup Sensores 
+ * @apiSuccess {json} Listado de sensores
+ * @apiVersion 0.0.1
+ * @apiName eliminar Sensor
+ * @apiDescription Elimina un sensor basado en su ID
+ */
 app.delete('/api/v1/sensores/:id', middleware.EnsureAuthenticated, function(request, response){
 	dataProvider.Sensor().Delete(request.params.id);
 	response.json("ok");
 });
 
+
+
+/**
+ * @api {get} /v1/sensores/:id/mediciones Obtener Mediciones
+ * @apiGroup Sensores 
+ * @apiSuccess {json} Listado de sensores
+ * @apiVersion 0.0.1
+ * @apiName Obtener mediciones
+ * @apiDescription Obtener las mediciones del sensor
+ * @apiParam [last] {boolean}
+ * @apiParam [limit] {number}
+ * @apiParam [sorttype] {string="TimeStamp"}
+ * @apiParam [sortdirection] {string="asc","desc"}
+ * @apiExample {curl} Example usage:
+ *     curl -i http://gardenlink.cl:9000/api/v1/sensores/1/mediciones?last=true&sorttype=TimeStamp&sortdirection=asc
+ */
 
 // Llamada para obtener el ultimo registro
 // http://localhost:9000/api/v1/sensores/1/mediciones?last=true
@@ -176,7 +230,14 @@ app.get('/api/v1/sensores/:id/mediciones', middleware.EnsureAuthenticated, funct
 });
 
 
-
+/**
+ * @api {post} /v1/sensores/mediciones Crear Medicion
+ * @apiGroup Sensores 
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName crear medicion
+ * @apiDescription Graba una medicion desde los sensores
+ */
 app.post('/api/v1/sensores/mediciones',middleware.EnsureAuthenticated, function(request, response) {
 
     dataProvider.Medicion().Save(objMedicion.GetTipoActuadorByName(TipoDispositivo),
@@ -189,6 +250,14 @@ app.post('/api/v1/sensores/mediciones',middleware.EnsureAuthenticated, function(
 });
 
 
+/**
+ * @api {post} /v1/sensores/mediciones/sync Sincronizar mediciones
+ * @apiGroup Sensores 
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName sincronizar mediciones
+ * @apiDescription Servicio usado para sincromizar entre servicdores
+ */
 app.post('/api/v1/sensores/mediciones/sync',middleware.EnsureAuthenticated, function(request, response) {
 
 	dataProvider.Medicion().SaveSync(request.body.Id,
@@ -207,7 +276,17 @@ app.post('/api/v1/sensores/mediciones/sync',middleware.EnsureAuthenticated, func
 
 
 
-
+/**
+ * @api {get} /v1/sensores/:id/mediciones/grafico Generar Grafico de mediciones
+ * @apiGroup Sensores 
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Graficar Sensor
+ * @apiDescription Genera un grafico con las ultimas mediciones definidas en el parametro limit
+ * @apiParam limit=50 {number}
+ * @apiExample {curl} Example usage:
+ *     curl -i http://gardenlink.cl:9000/api/v1/sensores/1/mediciones?limit=100
+ */
 app.get('/api/v1/sensores/:id/mediciones/grafico', middleware.EnsureAuthenticated, function(request, response,next){
 
 	var  today = moment();

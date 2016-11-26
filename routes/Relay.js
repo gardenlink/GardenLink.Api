@@ -19,7 +19,14 @@ var TipoDispositivo = "RELAY";
 /* INICIO API REST */
 
 
-
+/**
+ * @api {get} /v1/relays Obtiene la lista de relays existente
+ * @apiGroup Relays 
+ * @apiSuccess {json} Listado de relays
+ * @apiVersion 0.0.1
+ * @apiName Obtener Relays
+ * @apiDescription Devuelve los logs del dia de hoy
+ */
 app.get('/api/v1/relays', middleware.EnsureAuthenticated, function(request, response){
 	 dataProvider.Relay().GetAll(function(err, data) {
       if (data.length > 0) {
@@ -33,6 +40,14 @@ app.get('/api/v1/relays', middleware.EnsureAuthenticated, function(request, resp
 });
 
 
+/**
+ * @api {get} /v1/relays Obtiene un relay
+ * @apiGroup Relays 
+ * @apiSuccess {json} array
+ * @apiVersion 0.0.1
+ * @apiName Obtener un Relay
+ * @apiDescription Obtiene un relay basado en su ID
+ */
 app.get('/api/v1/relays/:id', middleware.EnsureAuthenticated, function (request, response) {
     var idRelay = request.params.id;
 
@@ -50,6 +65,14 @@ app.get('/api/v1/relays/:id', middleware.EnsureAuthenticated, function (request,
 });
 
 
+/**
+ * @api {post} /v1/relays Crear un relay
+ * @apiGroup Relays 
+ * @apiSuccess {json} array
+ * @apiVersion 0.0.1
+ * @apiName Crear un relay
+ * @apiDescription Crear un relay
+ */
 app.post('/api/v1/relays',middleware.EnsureAuthenticated ,function(request, response) {
 
     dataProvider.Relay().Save(request.body.IdRelay,
@@ -68,6 +91,14 @@ app.post('/api/v1/relays',middleware.EnsureAuthenticated ,function(request, resp
 
 });
 
+/**
+ * @api {put} /v1/relays/:id Modificar un relay
+ * @apiGroup Relays 
+ * @apiSuccess {json} array
+ * @apiVersion 0.0.1
+ * @apiName Modificar un relay
+ * @apiDescription Modificar un relay
+ */
 app.put('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(request, response) {
 
 	 dataProvider.Relay().Save(request.params.id,
@@ -85,17 +116,33 @@ app.put('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(request, 
     response.json("ok");
 });
 
+/**
+ * @api {delete} /v1/relays/:id Eliminar un relay
+ * @apiGroup Relays 
+ * @apiSuccess {json} array
+ * @apiVersion 0.0.1
+ * @apiName Eliminar un relay
+ * @apiDescription Eliminar un relay
+ */
 app.delete('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(request, response){
 	dataProvider.Relay().Delete(request.params.id);
 	response.json("ok");
 });
 
-/****
-* Desde POSTMAN enviar sin comillas
-* path = Activo
-* valor = true, false
-*/
-app.patch('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, function(request, response,next) {
+
+/**
+ * @api {patch} /v1/relays/:id Activar/Desactivar Relay
+ * @apiGroup Relays 
+ * @apiSuccess {json} array
+ * @apiVersion 0.0.1
+ * @apiName Activar Relay
+ * @apiDescription Activar o desactivar un relay
+ * @apiParam path=Activo {String}
+ * @apiParam value {Boolean="true","false"}
+ * @apiExample {curl} Example usage:
+ *     curl --request PATCH --data "path=Activo&value=true" http://gardenlink.cl:9000/api/v1/relays/1
+ */
+app.patch('/api/v1/relays/:id', middleware.EnsureAuthenticated, function(request, response,next) {
 	var idRelay = request.params.id;
     var op = request.body.op; //solamente replace por ahora
     var path = request.body.path; //debe venir sin comillas
@@ -170,6 +217,7 @@ app.patch('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, functio
 
 });
 
+/*
 app.get('/api/v1/servicio/relays', middleware.EnsureAuthenticated, function(request, response, next){
 
 		dataProvider.Cache(false, function(error, data ) {
@@ -203,12 +251,22 @@ app.get('/api/v1/servicio/relays/:id', middleware.EnsureAuthenticated, function(
 
 });
 
-
+*/
 
 // Llamada para obtener el ultimo registro
 // http://localhost:9000/api/v1/relays/1/mediciones?last=true&sorttype=_id&sortdirection=desc
 // criteria can be asc, desc, ascending, descending, 1, or -1
 
+/**
+ * @api {get} /v1/relays/:id/mediciones Obtener mediciones
+ * @apiGroup Relays 
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName Relay Mediciones
+ * @apiDescription Obtener ultimas mediciones asociadas al relay
+ * @apiExample {curl} Example usage:
+ 	   curl -i http://localhost:9000/api/v1/relays/1/mediciones?last=true&sorttype=_id&sortdirection=desc
+ */
 app.get('/api/v1/relays/:id/mediciones', middleware.EnsureAuthenticated, function(request, response){
 
 	var  today = moment();
@@ -269,7 +327,14 @@ app.get('/api/v1/relays/:id/mediciones', middleware.EnsureAuthenticated, functio
 
 
 });
-
+/**
+ * @api {post} /v1/relays/mediciones/sync Sincronizar mediciones
+ * @apiGroup Relays 
+ * @apiSuccess {json} ok
+ * @apiVersion 0.0.1
+ * @apiName sincronizar relays
+ * @apiDescription Servicio usado para sincromizar entre servidores
+ */
 app.post('/api/v1/relays/mediciones/sync',middleware.EnsureAuthenticated, function(request, response) {
 
 		dataProvider.Medicion().SaveSync(request.body.Id,
