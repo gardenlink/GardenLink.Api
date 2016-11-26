@@ -1,0 +1,72 @@
+{
+  "debug": {
+    "app_host" : "localhost",
+    "app_port" : "9000",
+    "mqtt" : {
+    	"mqtt_server" : "localhost",
+    	"mqtt_port": "1883",
+    	"http_server" : "localhost",
+    	"http_port" : "3000"
+    },
+    "datasource" : {
+        "NEDB"  : { "Habilitado" : "true",
+                    "Sincronizacion" : "true",
+                    "Debug" : "true",
+                    "Intervalo" : "1" },
+        "MONGO" : { "Habilitado" : "false",
+                     "Sincronizacion" : "false",
+                     "Intervalo" : "1",
+                     "Debug" : "true",
+                     "Servidor" : "xxxx",
+                     "Puerto" : "39960",
+                     "BaseDatos" : "xxxx",
+                     "UserName" : "xxxx",
+                     "Password" : "xxxx"
+                      },
+        "DWEET" : { "Habilitado" : "false",
+                    "Sincronizacion" : "true",
+                    "Intervalo" : "1",
+                    "prefijo_sensor" : "bb_njs_sensor_",
+                    "prefijo_bomba" : "bb_njs_relay_",
+                    "prefijo_dispositivo": "bb_njs_device_"
+                  }
+        },
+    "sync" : {
+      "Habilitado" : "false",
+      "Debug" : "true",
+      "Intervalo" : "1",
+      "Entidades" : {
+        "Dispositivos" : "true",
+        "Relays" : "true",
+        "Sensores" : "true",
+        "Mediciones" : "true"
+      },
+      "TargetHost" : "targetserver",
+      "TargetPort" : "80",
+      "BaseURL" : "/api/v1/"
+    },
+    "mail_enabled" : "false",
+    "mailer_service" : "GMAIL",
+    "mailer_user" : "xxxx@domain.com",
+    "mailer_pass" : "xxxx",
+    "mailer_destinatario" : "destinatario@domain.com",
+    "mailer_remitente" : "gardenlink@domain.com",
+    "twitter_enabled" : "false",
+    "twitter_consumer_secret" :"xxx",
+    "twitter_consumer_key":"xxx",
+    "twitter_access_token":"xxx",
+    "twitter_access_token_secret":"xxxx",
+    "twitter_callback_url" : "http://localhost:9000/auth/twitter/callback",
+    "twitter_autenticacion" : "false",
+    "monitor_habilitado" : "false",
+    "monitor_intervalo" : "1",
+    "monitor_datasource" : "",
+    "temporizador_habilitado" : "false",
+    "seguridad" : {
+    	"habilitado" : "false",
+    	"jwt" : {
+    		"TOKEN_SECRET" : "secreto"
+    	}
+    }
+  }
+}
